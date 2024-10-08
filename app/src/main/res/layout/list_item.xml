@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_number"
+        android:text="Note number"
+        android:textAppearance="?android:attr/textAppearanceLarge"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tv_content"
+        android:text="Content of note"
+        android:layout_marginTop="4dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
+    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_date"
+            android:layout_marginEnd="4dp"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_width="0dp"
+            android:id="@+id/tv_created_at"
+            android:layout_height="wrap_content"
+            android:text="Date and time"/>
+
+        <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/cb_check" />
+
+        
+    </LinearLayout>
+
+</LinearLayout>

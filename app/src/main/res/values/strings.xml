@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Мои заметки</string>
+    <string name="menu_exit">Закрыть приложение</string>
+    <string name="et_content">Введите текст заметки</string>
+    <string name="menu_clear_database">Очистить базу данных</string>
+    <string name="menu_add_item">Добавить заметку</string>
+</resources>
