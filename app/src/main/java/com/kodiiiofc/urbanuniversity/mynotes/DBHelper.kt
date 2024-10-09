@@ -5,6 +5,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.icu.text.Transliterator.Position
 import android.widget.Toast
 
 class DBHelper(val context: Context) :
@@ -76,10 +77,62 @@ class DBHelper(val context: Context) :
         return notes
     }
 
+    @SuppressLint("Range")
+    private fun updatePositions() {
+        val tempList = mutableListOf<Notes.Note>()
+        val readableDB = this.readableDatabase
+        val cursorReadableDB = readableDB.rawQuery("SELECT * FROM $TABLE_NAME ORDER BY $KEY_POSITION ASC", null)
+        if (cursorReadableDB.moveToFirst()) {
+            do {
+                val content =
+                    cursorReadableDB.getString(cursorReadableDB.getColumnIndex(KEY_CONTENT))
+                val checked =
+                    cursorReadableDB.getInt(cursorReadableDB.getColumnIndex(KEY_CHECKED)) == 1
+                val createdAt =
+                    cursorReadableDB.getString(cursorReadableDB.getColumnIndex(KEY_CREATED_AT))
+                val note = Notes.Note(content, createdAt, checked)
+                tempList.add(note)
+            } while (cursorReadableDB.moveToNext())
+        }
+        cursorReadableDB.close()
+        readableDB.close()
+        val writableDB = this.writableDatabase
+        writableDB.delete(TABLE_NAME, null, null)
+
+        for (note in tempList.withIndex()) {
+            val contentValues = ContentValues()
+            contentValues.put(KEY_POSITION, note.index)
+            contentValues.put(KEY_CONTENT, note.value.content)
+            contentValues.put(KEY_CHECKED, note.value.isChecked)
+            contentValues.put(KEY_CREATED_AT, note.value.createdAt)
+            writableDB.insert(TABLE_NAME, null, contentValues)
+        }
+        writableDB.close()
+    }
+
+    fun updateNote(note: Notes.Note, position: Int) {
+        val db = this.writableDatabase
+        val contentValues = ContentValues()
+        contentValues.put(KEY_POSITION, position)
+        contentValues.put(KEY_CONTENT, note.content)
+        contentValues.put(KEY_CHECKED, note.isChecked)
+        contentValues.put(KEY_CREATED_AT, note.createdAt)
+        db.update(TABLE_NAME, contentValues, "$KEY_POSITION = $position", null)
+        db.close()
+    }
+
+    fun deleteNote(position: Int) {
+        val db = this.writableDatabase
+        db.delete(TABLE_NAME, "$KEY_POSITION = $position", null)
+        db.close()
+        updatePositions()
+    }
+
     fun removeAll() {
         val db = this.writableDatabase
         db.delete(TABLE_NAME, null, null)
         db.close()
     }
+
 
 }

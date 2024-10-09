@@ -15,26 +15,24 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.recyclerview.widget.RecyclerView
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), OnFragmentDataListener {
 
     private lateinit var statusBar: View
     private lateinit var toolbar: Toolbar
-    private lateinit var notesRV: RecyclerView
 
-    private val db = DBHelper(this)
-
-    private var notes: Notes? = null
+    private lateinit var recycleViewFragment: RecycleViewFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
         initToolbar()
-        notes = db.loadNotes()
-        notesRV = findViewById(R.id.rv_notes)
-        val adapter = NotesAdapter(notes!!)
-        notesRV.adapter = adapter
-        notesRV.setHasFixedSize(true)
+
+        recycleViewFragment = RecycleViewFragment()
+        supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.fragment_container, recycleViewFragment)
+            .commit()
     }
 
     private fun initToolbar() {
@@ -56,11 +54,7 @@ class MainActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.menu_exit -> finishAffinity()
             R.id.menu_add_item -> addItem()
-            R.id.menu_clear_database -> {
-                db.removeAll()
-                notes!!.clear()
-                notesRV.adapter = NotesAdapter(db.loadNotes())
-                notesRV.adapter?.notifyDataSetChanged()
+            R.id.menu_clear_database -> {recycleViewFragment.clearDatabase()
             }
         }
         return super.onOptionsItemSelected(item)
@@ -77,17 +71,25 @@ class MainActivity : AppCompatActivity() {
             .setMessage("Введите текст заметки ниже")
             .setView(dialogAddItem)
             .setPositiveButton("Добавить заметку") {dialog, _ ->
-                val content = contentET.text.toString().trim()
-                if (content.isNotEmpty()) {
-                    notes!!.addNote(content)
-                    db.saveNotes(notes!!)
-                    notesRV.adapter = NotesAdapter(db.loadNotes())
-                    notesRV.adapter?.notifyDataSetChanged()
-                }
+                recycleViewFragment.addNote(contentET.text.toString().trim())
                 dialog.dismiss()
             }
             .setNeutralButton("Отмена", null)
             .create().show()
+
+    }
+
+    override fun onData(note: Notes.Note?, position: Int) {
+        val bundle = Bundle()
+        bundle.putInt("position", position)
+        bundle.putSerializable("note", note)
+
+        val transaction = supportFragmentManager.beginTransaction()
+        val editNoteFragment = EditNoteFragment()
+        editNoteFragment.arguments = bundle
+        transaction.replace(R.id.fragment_container, editNoteFragment)
+        transaction.addToBackStack(null)
+        transaction.commit()
     }
 
 }

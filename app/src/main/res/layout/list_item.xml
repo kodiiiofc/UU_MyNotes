@@ -28,7 +28,7 @@
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_date"
+            android:src="@drawable/ic_last_edit"
             android:layout_marginEnd="4dp"/>
 
         <TextView

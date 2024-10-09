@@ -10,14 +10,11 @@
 
     <include layout="@layout/toolbar"/>
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:padding="8dp"
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container"
+        android:name="com.kodiiiofc.urbanuniversity.mynotes.RecycleViewFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rv_notes"
-        tools:listitem="@layout/list_item"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
         />
 
 </LinearLayout>

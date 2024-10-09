@@ -4,4 +4,7 @@
     <string name="et_content">Введите текст заметки</string>
     <string name="menu_clear_database">Очистить базу данных</string>
     <string name="menu_add_item">Добавить заметку</string>
+    <string name="et_edit_note">Введите новый текст заметки</string>
+    <string name="btn_save">Сохранить</string>
+    <string name="btn_delete">Удалить заметку</string>
 </resources>
